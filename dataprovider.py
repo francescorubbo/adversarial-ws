@@ -21,8 +21,8 @@ def getToys(means,stds,samplesize,scale=True):
     X = np.concatenate([signal,bckg])
     y = np.array( [1. for x in signal]+[0. for x in bckg] )
     
+    scaler = StandardScaler()
     if scale:
-        scaler = StandardScaler()
         X = scaler.fit_transform(X)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
@@ -38,9 +38,9 @@ def getToys(means,stds,samplesize,scale=True):
     X_test = Variable(Tensor(X_test), volatile=True)
     y_test = Variable(Tensor(y_test), volatile=True)
     
-    return X_train,y_train,X_val,y_val,X_test,y_test
+    return X_train,y_train,X_val,y_val,X_test,y_test,scaler
 
-def getWeakToys(means,stds,samplesize,fractions,scale=True):
+def getWeakToys(means,stds,samplesize,fractions,scaler):
     Xs = []
     ys = []
     for f in fractions:
@@ -52,6 +52,7 @@ def getWeakToys(means,stds,samplesize,fractions,scale=True):
                 for mu,sigma in zip(means,stds)
                 ]).T
         X = np.concatenate([signal,bckg])
+        X = scaler.transform(X)
         y = np.array( [f for x in X] )
         Xs.append(Variable(Tensor(X)))
         ys.append(Variable(Tensor(y), requires_grad=False))

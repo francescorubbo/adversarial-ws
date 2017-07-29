@@ -11,6 +11,7 @@ class MSELoss(nn.Module):
         return loss
 
 class MSELoss_LLP(nn.Module):
+### need to implement back-prop
 
     def __init__(self):
         super(MSELoss_LLP, self).__init__()
