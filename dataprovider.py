@@ -59,3 +59,25 @@ def getWeakToys(means,stds,samplesize,fractions,scaler):
     
     return Xs,ys
 
+def getAdvWeakToys(means,stds,samplesize,fractions,shifts,scaler):
+    Xs = []
+    ys = []
+    for i,f in enumerate(fractions):
+        signal = np.stack([
+                #np.random.normal(mu[0],sigma[0],int(samplesize*f)) for mu,sigma in zip(means,stds)
+                np.random.normal(mu[0]*(1+shift*i),sigma[0],int(samplesize*f)) for mu,sigma,shift in zip(means,stds,shifts)
+                ]).T
+        bckg = np.stack([
+                np.random.normal(mu[1],sigma[1],int(samplesize*(1-f)))
+                for mu,sigma in zip(means,stds)
+                ]).T
+        X = np.concatenate([signal,bckg])
+        X = scaler.transform(X)
+        y = np.array( [f for x in X] )
+        Xs.append(Variable(Tensor(X)))
+        ys.append(Variable(Tensor(y), requires_grad=False))
+    
+    return Xs,ys
+
+
+#                np.random.normal(mu[1]*(1+shift*i),sigma[1],int(samplesize*(1-f)))
