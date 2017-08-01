@@ -7,13 +7,13 @@ samplesize = 20000
 batch_size = 128
 n_epochs = 200
 
-X_train, y_train, X_val, y_val, X_test, y_test = getToys(means,stds,samplesize)
+X_train, y_train, X_val, y_val, X_test, y_test, scaler = getToys(means,stds,samplesize)
 
 print X_train.size(),y_train.size()
 print X_test.size(),y_test.size()
 
 D_in = 3
-H = 3
+H = 30
 D_out = 1
 
 from models import Net
