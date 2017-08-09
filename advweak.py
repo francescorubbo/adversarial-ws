@@ -5,14 +5,14 @@ means = [(18,26),(0.06,0.09),(0.23,0.28)]
 stds  = [(7,8),  (0.04,0.04),(0.05,0.04)]
 samplesize = 20000
 fractions = np.linspace(0.2,0.4,27)
-shifts = [0.,0,0]
+shifts = [0.05,0,0]
 #fractions = [0.4]
 print fractions
 
 n_epochs = 100
 cp_delay = 98
 learning_rate = 9e-3
-kadv = 0
+kadv = 1
 
 D_in = 3
 H = 30
@@ -33,6 +33,7 @@ def run():
 
     if use_cuda:
         model.cuda()
+        model_adv.cuda()
     loss_fn = nn.BCELoss()
 
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
@@ -82,7 +83,7 @@ def run():
 
     model.load_state_dict(checkpoint['state_dict'])
     y_pred_test = model(X_test)
-    fpr,tpr,thres = roc_curve(y_test.data.numpy(), y_pred_test.data.numpy())
+    fpr,tpr,thres = roc_curve(y_test.data.cpu().numpy(), y_pred_test.data.cpu().numpy())
     area =  auc(fpr, tpr)
     return fpr,tpr,area
 
